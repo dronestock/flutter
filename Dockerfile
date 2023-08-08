@@ -1,92 +1,86 @@
-ARG FLUTTER_VERSION=2.8.1
 ARG FLUTTER_HOME=/opt/google/flutter
+ARG ANDROID_HOME=/opt/google/android
+ARG JAVA_HOME=/opt/oracle/openjdk
 
 
+FROM ghcr.io/cirruslabs/flutter:3.10.6 AS flutter
+
+RUN rm -rf /sdks/flutter/dev
+RUN rm -rf /sdks/flutter/examples
+
+FROM dockerproxy.com/mobiledevops/android-sdk-image:33.0.2 AS android
+
+RUN rm -rf /opt/android-sdk-linux/emulator
+RUN rm -rf /opt/android-sdk-linux/cmdline-tools
+RUN rm -rf /opt/android-sdk-linux/extras
+RUN rm -rf /opt/android-sdk-linux/platforms
+
+# Disable Dependabot updates
+FROM dockerproxy.com/adoptopenjdk/openjdk11:jre-11.0.20_8 AS java
+
+FROM dockerproxy.com/bitnami/git:2.41.0 AS git
 
 
-
-FROM storezhang/alpine AS flutter
-
-# 明确指定工作目录，防止后面运行命令出现文件或者目录找不到的问题
-WORKDIR /opt
-
-
-RUN apk update
-RUN apk add axel
-
-# 安装Flutter
-ARG FLUTTER_VERSION
+FROM ccr.ccs.tencentyun.com/storezhang/ubuntu:23.04.17 AS builder
 ARG FLUTTER_HOME
+ARG ANDROID_HOME
+ARG JAVA_HOME
+COPY --from=flutter /sdks/flutter /docker/${FLUTTER_HOME}
+COPY --from=android /opt/android-sdk-linux /docker/${ANDROID_HOME}
+COPY --from=java /opt/java/openjdk /docker/${JAVA_HOME}
+COPY --from=git /opt/bitnami/git/bin/git /docker/usr/local/bin/git
+COPY flutter /docker/usr/local/bin/flutter
 
 
-ENV FLUTTER_BIN_FILENAME flutter-${FLUTTER_VERSION}.tar.xz
-ENV DOWNLOAD_URL https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz
+FROM ccr.ccs.tencentyun.com/storezhang/ubuntu:23.04.17
 
+LABEL author="storezhang<华寅>" \
+    email="storezhang@gmail.com" \
+    qq="160290688" \
+    wechat="storezhang" \
+    description="Flutter插件，此镜像只支持Android编译打包，如果需要其它平台的支持，请使用对应平台的镜像"
 
-RUN axel --num-connections 128 --output ${FLUTTER_BIN_FILENAME} --insecure ${DOWNLOAD_URL}
-RUN tar -xzf ${JDK_BIN_FILENAME}
-RUN mkdir -p ${FLUTTER_HOME}
-RUN mv jdk-${FLUTTER_VERSION}/* ${FLUTTER_HOME}/
-
-
-
-
-
-# 打包真正的镜像
-FROM storezhang/alpine
-
-
-LABEL author="storezhang<华寅>"
-LABEL email="storezhang@gmail.com"
-LABEL qq="160290688"
-LABEL wechat="storezhang"
-LABEL description="Drone持续集成Flutter插件，支持测试、打包、发布等常规功能"
-
-
-ARG FLUTTER_HOME
-
-
-# 复制文件
-COPY --from=flutter ${FLUTTER_HOME} ${FLUTTER_HOME}
-COPY docker /
-COPY flutter /bin
-
+COPY --from=builder /docker /
 
 RUN set -ex \
     \
     \
     \
-    # 安装依赖库
-    && apk update \
-    && apk --no-cache add libstdc++ gcompat gnupg \
+    && apt update -y \
+    # && apt upgrade -y \
     \
-    # 解决找不到库的问题
-    && LD_PATH=/etc/ld-musl-x86_64.path \
-    && echo "/lib" >> ${LD_PATH} \
-    && echo "/usr/lib" >> ${LD_PATH} \
-    && echo "/usr/local/lib" >> ${LD_PATH} \
-    && echo "${JAVA_HOME}/lib/default" >> ${LD_PATH} \
-    && echo "${JAVA_HOME}/lib/j9vm" >> ${LD_PATH} \
-    && echo "${JAVA_HOME}/lib/server" >> ${LD_PATH} \
+    # 安装依赖库
+    && apt install -y unzip \
     \
     \
     \
     # 增加执行权限
-    && chmod +x /bin/flutter \
-    && chmod +x /usr/bin/gsk \
+    && chmod +x /usr/local/bin/flutter \
     \
     \
     \
-    && rm -rf /var/cache/apk/*
-
-
+    # 清理镜像，减少无用包
+    && apt autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean
 
 # 执行命令
-ENTRYPOINT /bin/flutter
+ENTRYPOINT /usr/local/bin/flutter
 
+ARG FLUTTER_HOME
+ARG ANDROID_HOME
+ARG JAVA_HOME
 
-# 配置Flutter主目录
 ENV FLUTTER_HOME ${FLUTTER_HOME}
+ENV ANDROID_HOME ${ANDROID_HOME}
+ENV JAVA_HOME ${JAVA_HOME}
+ENV PATH=${JAVA_HOME}/bin:${FLUTTER_HOME}/bin:${ANDROID_HOME}/bin:$PATH
 
-# 将Flutter加入到系统路径中
-ENV PATH=${FLUTTER_HOME}/bin:$PATH
+ENV FLUTTER_STORAGE_BASE_URL https://storage.flutter-io.cn
+ENV PUB_HOSTED_URL https://pub.flutter-io.cn
+ENV FLUTTER_GIT_URL https://gitee.com/mirrors/Flutter.git
+
+# 配置依赖包缓存路径
+ENV FLUTTER_CACHE /var/lib/flutter
+ENV GRADLE_USER_HOME ${FLUTTER_CACHE}/gradle
+ENV PUB_CACHE ${FLUTTER_CACHE}/pub
