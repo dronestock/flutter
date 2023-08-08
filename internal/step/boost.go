@@ -77,7 +77,7 @@ func (b *Boost) boostGradle(prop *properties.Properties, path string) (err error
 }
 
 func (b *Boost) gradleVersion(url string) (version string, err error) {
-	re := regexp.MustCompile(".*gradle-(.+)\\.zip")
+	re := regexp.MustCompile(`.*gradle-(.+).zip`)
 	match := re.FindStringSubmatch(url)
 	if 1 < len(match) {
 		version = match[1]
