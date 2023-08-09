@@ -9,8 +9,10 @@ import (
 type Plugin struct {
 	drone.Base
 
-	Source string        `default:"${SOURCE=.}" validate:"dirpath"`
-	Type   internal.Type `default:"${TYPE=android}" validate:"required,oneof=android"`
+	// 源代码目录
+	Source string `default:"${SOURCE=.}" validate:"dirpath"`
+	// 类型
+	Type internal.Type `default:"${TYPE=android}" validate:"required,oneof=android"`
 }
 
 func NewPlugin() drone.Plugin {
