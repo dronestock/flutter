@@ -84,3 +84,6 @@ ENV FLUTTER_GIT_URL https://gitee.com/mirrors/Flutter.git
 ENV FLUTTER_CACHE /var/lib/flutter
 ENV GRADLE_USER_HOME ${FLUTTER_CACHE}/gradle
 ENV PUB_CACHE ${FLUTTER_CACHE}/pub
+
+# 默认为Android平台
+ENV TYPE android
