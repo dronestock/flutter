@@ -18,7 +18,7 @@ RUN rm -rf /opt/android-sdk-linux/platforms
 # Disable Dependabot updates
 FROM dockerproxy.com/library/eclipse-temurin:17 AS java
 
-FROM dockerproxy.com/bitnami/git:2.41.0 AS git
+FROM dockerproxy.com/bitnami/git:2.42.0 AS git
 
 
 FROM ccr.ccs.tencentyun.com/storezhang/ubuntu:23.04.17 AS builder
