@@ -8,7 +8,7 @@ FROM ghcr.io/cirruslabs/flutter:3.13.0 AS flutter
 RUN rm -rf /sdks/flutter/dev
 RUN rm -rf /sdks/flutter/examples
 
-FROM mobiledevops/android-sdk-image:33.0.2 AS android
+FROM dockerproxy.com/mobiledevops/android-sdk-image:33.0.2 AS android
 
 RUN rm -rf /opt/android-sdk-linux/emulator
 RUN rm -rf /opt/android-sdk-linux/cmdline-tools
@@ -16,9 +16,9 @@ RUN rm -rf /opt/android-sdk-linux/extras
 RUN rm -rf /opt/android-sdk-linux/platforms
 
 # Disable Dependabot updates
-FROM eclipse-temurin:20 AS java
+FROM dockerproxy.com/library/eclipse-temurin:17 AS java
 
-FROM bitnami/git:2.42.0 AS git
+FROM dockerproxy.com/bitnami/git:2.41.0 AS git
 
 
 FROM ccr.ccs.tencentyun.com/storezhang/ubuntu:23.04.17 AS builder

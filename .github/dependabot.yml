@@ -21,3 +21,5 @@ updates:
       - storezhang
     reviewers:
       - storezhang
+    ignore:
+      - dependency-name: "eclipse-temurin"
