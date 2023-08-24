@@ -26,6 +26,7 @@ func (p *Plugin) Config() drone.Config {
 func (p *Plugin) Steps() drone.Steps {
 	return drone.Steps{
 		drone.NewStep(step.NewBoost(p.Source, p.Type)).Name("加速").Interrupt().Build(),
+		drone.NewStep(step.NewClean(p.Base, p.Source)).Name("清理").Interrupt().Build(),
 		drone.NewStep(step.NewGet(p.Base, p.Source)).Name("依赖").Interrupt().Build(),
 		drone.NewStep(step.NewBuild(p.Base, p.Source, p.Type)).Name("打包").Interrupt().Build(),
 	}
