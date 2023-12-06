@@ -3,7 +3,7 @@ ARG ANDROID_HOME=/opt/google/android
 ARG JAVA_HOME=/opt/oracle/openjdk
 
 
-FROM ghcr.io/cirruslabs/flutter:3.16.1 AS flutter
+FROM ghcr.io/cirruslabs/flutter:3.16.2 AS flutter
 
 RUN rm -rf /sdks/flutter/dev
 RUN rm -rf /sdks/flutter/examples
