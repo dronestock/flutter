@@ -8,7 +8,7 @@ FROM ghcr.io/cirruslabs/flutter:3.16.3 AS flutter
 RUN rm -rf /sdks/flutter/dev
 RUN rm -rf /sdks/flutter/examples
 
-FROM mobiledevops/android-sdk-image:33.0.2 AS android
+FROM mobiledevops/android-sdk-image:34.0.0 AS android
 
 RUN rm -rf /opt/android-sdk-linux/emulator
 RUN rm -rf /opt/android-sdk-linux/cmdline-tools
