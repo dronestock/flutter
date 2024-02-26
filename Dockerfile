@@ -18,7 +18,7 @@ RUN rm -rf /opt/android-sdk-linux/platforms
 # Disable Dependabot updates
 FROM eclipse-temurin:17 AS java
 
-FROM bitnami/git:2.43.2 AS git
+FROM bitnami/git:2.44.0 AS git
 
 
 FROM ccr.ccs.tencentyun.com/storezhang/ubuntu:23.04.17 AS builder
