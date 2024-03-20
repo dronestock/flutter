@@ -112,6 +112,7 @@ steps:
       PASSWORD_CCR:
         from_secret: password_ccr
     settings:
+      dockerfile: web.Dockerfile
       repository: dronestock/$${NAME}
       prefix: web
       middle: "-"
