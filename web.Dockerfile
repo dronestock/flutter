@@ -6,7 +6,7 @@ LABEL author="storezhang<华寅>" \
     wechat="storezhang" \
     description="Flutter插件，此镜像只支持Web平台编译打包，如果需要其它平台的支持，请使用对应平台的镜像"
 
-COPY --from=builder /docker /
+COPY flutter /usr/local/bin/flutter
 
 RUN set -ex \
     \
