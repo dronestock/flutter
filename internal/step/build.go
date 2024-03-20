@@ -37,8 +37,6 @@ func (b *Build) Run(ctx context.Context) (err error) {
 		target = "apk"
 	case constant.TypeWeb:
 		target = "web"
-	default:
-		target = "apk"
 	}
 	_args := args.New().Build().Subcommand("build", target)
 	if b.Verbose {
