@@ -2,7 +2,6 @@ ARG ANDROID_HOME=/opt/google/android
 ARG JAVA_HOME=/opt/oracle/openjdk
 
 
-FROM ccr.ccs.tencentyun.com/storezhang/flutter:0.0.1 AS flutter
 FROM mobiledevops/android-sdk-image:34.0.0 AS android
 
 RUN rm -rf /opt/android-sdk-linux/emulator
