@@ -1,4 +1,4 @@
-package internal
+package constant
 
 const (
 	EnvAndroidHome  = "ANDROID_HOME"

@@ -19,6 +19,20 @@ get:
   name: token_github_storezhang
 ---
 
+kind: secret
+name: feishu_id
+get:
+  path: secrets
+  name: feishu_id
+---
+
+kind: secret
+name: feishu_secret
+get:
+  path: secrets
+  name: feishu_secret
+---
+
 
 kind: pipeline
 type: docker
@@ -76,7 +90,31 @@ steps:
       PASSWORD_CCR:
         from_secret: password_ccr
     settings:
-      repository: dronestock/$${NAME}.android
+      repository: dronestock/$${NAME}
+      registries:
+        - username: dronestock
+          password: $${PASSWORD_DOCKER}
+        - hostname: ccr.ccs.tencentyun.com
+          username: "160290688"
+          password: $${PASSWORD_CCR}
+          required: true
+
+  - name: Web
+    image: ccr.ccs.tencentyun.com/dronestock/docker
+    pull: always
+    privileged: true
+    volumes:
+      - name: docker
+        path: /var/lib/docker
+    environment:
+      PASSWORD_DOCKER:
+        from_secret: token_docker
+      PASSWORD_CCR:
+        from_secret: password_ccr
+    settings:
+      repository: dronestock/$${NAME}
+      prefix: web
+      middle: "-"
       registries:
         - username: dronestock
           password: $${PASSWORD_DOCKER}
@@ -117,6 +155,19 @@ steps:
             file: $${OUTPUT_WINDOWS}
           - name: $${NAME}-$${VERSION}-darwin-amd64
             file: $${OUTPUT_MAC}
+
+  - name: 通知
+    image: ccr.ccs.tencentyun.com/dronestock/feishu
+    pull: always
+    when:
+      status:
+        - success
+        - failure
+    settings:
+      id:
+        from_secret: feishu_id
+      secret:
+        from_secret: feishu_secret
 
 
 volumes:

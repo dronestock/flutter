@@ -4,21 +4,23 @@ import (
 	"context"
 
 	"github.com/dronestock/drone"
-	"github.com/dronestock/flutter/internal/internal"
+	"github.com/dronestock/flutter/internal/internal/constant"
 	"github.com/goexl/gox/args"
 )
 
 type Build struct {
 	drone.Base
 
+	binary string
 	source string
-	typ    internal.Type
+	typ    constant.Type
 }
 
-func NewBuild(base drone.Base, source string, typ internal.Type) *Build {
+func NewBuild(base drone.Base, binary string, source string, typ constant.Type) *Build {
 	return &Build{
 		Base: base,
 
+		binary: binary,
 		source: source,
 		typ:    typ,
 	}
@@ -31,14 +33,18 @@ func (b *Build) Runnable() bool {
 func (b *Build) Run(ctx context.Context) (err error) {
 	target := "apk"
 	switch b.typ {
-	case internal.TypeAndroid:
+	case constant.TypeAndroid:
+		target = "apk"
+	case constant.TypeWeb:
+		target = "web"
+	default:
 		target = "apk"
 	}
 	_args := args.New().Build().Subcommand("build", target)
 	if b.Verbose {
 		_args.Flag("verbose")
 	}
-	_, err = b.Command(internal.CommandFlutter).Args(_args.Build()).Dir(b.source).Context(ctx).Build().Exec()
+	_, err = b.Command(b.binary).Args(_args.Build()).Dir(b.source).Context(ctx).Build().Exec()
 
 	return
 }

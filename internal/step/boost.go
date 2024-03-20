@@ -7,16 +7,16 @@ import (
 	"path/filepath"
 	"regexp"
 
-	"github.com/dronestock/flutter/internal/internal"
+	"github.com/dronestock/flutter/internal/internal/constant"
 	"github.com/magiconair/properties"
 )
 
 type Boost struct {
 	source string
-	typ    internal.Type
+	typ    constant.Type
 }
 
-func NewBoost(source string, typ internal.Type) *Boost {
+func NewBoost(source string, typ constant.Type) *Boost {
 	return &Boost{
 		source: source,
 		typ:    typ,
@@ -29,7 +29,7 @@ func (b *Boost) Runnable() bool {
 
 func (b *Boost) Run(ctx context.Context) (err error) {
 	switch b.typ {
-	case internal.TypeAndroid:
+	case constant.TypeAndroid:
 		err = b.android(ctx)
 	}
 
@@ -50,8 +50,8 @@ func (b *Boost) android(ctx context.Context) (err error) {
 }
 
 func (b *Boost) linkPlatforms(_ context.Context) (err error) {
-	link := filepath.Join(os.Getenv(internal.EnvAndroidHome), internal.DirPlatforms)
-	modules := filepath.Join(os.Getenv(internal.EnvFlutterCache), internal.DirPlatforms)
+	link := filepath.Join(os.Getenv(constant.EnvAndroidHome), constant.DirPlatforms)
+	modules := filepath.Join(os.Getenv(constant.EnvFlutterCache), constant.DirPlatforms)
 	if _, se := os.Stat(modules); nil != se && os.IsNotExist(se) {
 		err = os.MkdirAll(modules, os.ModePerm)
 	}
@@ -63,13 +63,13 @@ func (b *Boost) linkPlatforms(_ context.Context) (err error) {
 }
 
 func (b *Boost) boostGradle(prop *properties.Properties, path string) (err error) {
-	if version, ve := b.gradleVersion(prop.MustGetString(internal.KeyDistributionUrl)); nil != ve {
+	if version, ve := b.gradleVersion(prop.MustGetString(constant.KeyDistributionUrl)); nil != ve {
 		err = ve
 	} else if file, oe := os.OpenFile(path, os.O_WRONLY, os.ModePerm); nil != oe {
 		err = oe
 	} else {
 		url := fmt.Sprintf("https://mirrors.cloud.tencent.com/gradle/gradle-%s.zip", version)
-		_, _ = prop.MustSet(internal.KeyDistributionUrl, url)
+		_, _ = prop.MustSet(constant.KeyDistributionUrl, url)
 		_, err = prop.Write(file, properties.UTF8)
 	}
 
