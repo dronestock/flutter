@@ -31,14 +31,12 @@ func (b *Build) Runnable() bool {
 }
 
 func (b *Build) Run(ctx context.Context) (err error) {
-	target := ""
+	target := "apk"
 	switch b.typ {
 	case constant.TypeAndroid:
 		target = "apk"
 	case constant.TypeWeb:
 		target = "web"
-	default:
-		target = "apk"
 	}
 	_args := args.New().Build().Subcommand("build", target)
 	if b.Verbose {
