@@ -14,7 +14,7 @@ type plugin struct {
 	// 源代码目录
 	Source string `default:"${SOURCE=.}" validate:"dirpath"`
 	// 类型
-	Type constant.Type `default:"${TYPE=android}" validate:"required,oneof=android"`
+	Type constant.Type `default:"${TYPE=android}" validate:"required,oneof=android web"`
 }
 
 func New() drone.Plugin {
