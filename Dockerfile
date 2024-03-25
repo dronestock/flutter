@@ -2,7 +2,7 @@ ARG ANDROID_HOME=/opt/google/android
 ARG JAVA_HOME=/opt/oracle/openjdk
 
 
-FROM mobiledevops/android-sdk-image:34.0.0 AS android
+FROM mobiledevops/android-sdk-image:34.0.1 AS android
 
 RUN rm -rf /opt/android-sdk-linux/emulator
 RUN rm -rf /opt/android-sdk-linux/cmdline-tools
