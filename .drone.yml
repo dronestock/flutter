@@ -124,6 +124,31 @@ steps:
           password: $${PASSWORD_CCR}
           required: true
 
+  - name: Linux
+    image: ccr.ccs.tencentyun.com/dronestock/docker
+    pull: always
+    privileged: true
+    volumes:
+      - name: docker
+        path: /var/lib/docker
+    environment:
+      PASSWORD_DOCKER:
+        from_secret: token_docker
+      PASSWORD_CCR:
+        from_secret: password_ccr
+    settings:
+      dockerfile: linux.Dockerfile
+      repository: dronestock/$${NAME}
+      prefix: linux
+      middle: "-"
+      registries:
+        - username: dronestock
+          password: $${PASSWORD_DOCKER}
+        - hostname: ccr.ccs.tencentyun.com
+          username: "160290688"
+          password: $${PASSWORD_CCR}
+          required: true
+
   - name: 改变
     image: ccr.ccs.tencentyun.com/dronestock/changelog
     pull: always
