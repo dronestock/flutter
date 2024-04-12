@@ -20,17 +20,17 @@ get:
 ---
 
 kind: secret
-name: feishu_id
+name: id_feishu
 get:
   path: secrets
-  name: feishu_id
+  name: id_feishu
 ---
 
 kind: secret
-name: feishu_secret
+name: secret_feishu
 get:
   path: secrets
-  name: feishu_secret
+  name: secret_feishu
 ---
 
 
@@ -77,7 +77,7 @@ steps:
           os: darwin
           arch: amd64
 
-  - name: Android
+  - name: 推包
     image: ccr.ccs.tencentyun.com/dronestock/docker
     pull: always
     privileged: true
@@ -91,56 +91,16 @@ steps:
         from_secret: password_ccr
     settings:
       repository: dronestock/$${NAME}
-      registries:
-        - username: dronestock
-          password: $${PASSWORD_DOCKER}
-        - hostname: ccr.ccs.tencentyun.com
-          username: "160290688"
-          password: $${PASSWORD_CCR}
-          required: true
-
-  - name: Web
-    image: ccr.ccs.tencentyun.com/dronestock/docker
-    pull: always
-    privileged: true
-    volumes:
-      - name: docker
-        path: /var/lib/docker
-    environment:
-      PASSWORD_DOCKER:
-        from_secret: token_docker
-      PASSWORD_CCR:
-        from_secret: password_ccr
-    settings:
-      dockerfile: web.Dockerfile
-      repository: dronestock/$${NAME}
-      prefix: web
-      middle: "-"
-      registries:
-        - username: dronestock
-          password: $${PASSWORD_DOCKER}
-        - hostname: ccr.ccs.tencentyun.com
-          username: "160290688"
-          password: $${PASSWORD_CCR}
-          required: true
-
-  - name: Linux
-    image: ccr.ccs.tencentyun.com/dronestock/docker
-    pull: always
-    privileged: true
-    volumes:
-      - name: docker
-        path: /var/lib/docker
-    environment:
-      PASSWORD_DOCKER:
-        from_secret: token_docker
-      PASSWORD_CCR:
-        from_secret: password_ccr
-    settings:
-      dockerfile: linux.Dockerfile
-      repository: dronestock/$${NAME}
-      prefix: linux
-      middle: "-"
+      targets:
+        - dockerfile: Dockerfile
+          prefix: android
+          middle: "-"
+        - dockerfile: web.Dockerfile
+          prefix: web
+          middle: "-"
+        - dockerfile: linux.Dockerfile
+          prefix: linux
+          middle: "-"
       registries:
         - username: dronestock
           password: $${PASSWORD_DOCKER}
@@ -191,9 +151,9 @@ steps:
         - failure
     settings:
       id:
-        from_secret: feishu_id
+        from_secret: id_feishu
       secret:
-        from_secret: feishu_secret
+        from_secret: secret_feishu
 
 
 volumes:
