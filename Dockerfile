@@ -13,7 +13,7 @@ RUN rm -rf /opt/android-sdk-linux/platforms
 FROM eclipse-temurin:17 AS java
 
 
-FROM ccr.ccs.tencentyun.com/storezhang/ubuntu:23.04.17 AS builder
+FROM ccr.ccs.tencentyun.com/storezhang/ubuntu:24.04.24 AS builder
 ARG ANDROID_HOME
 ARG JAVA_HOME
 COPY --from=android /opt/android-sdk-linux /docker/${ANDROID_HOME}
