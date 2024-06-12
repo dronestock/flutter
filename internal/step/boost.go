@@ -50,8 +50,9 @@ func (b *Boost) android(ctx *context.Context) (err error) {
 }
 
 func (b *Boost) linkPlatforms(_ *context.Context) (err error) {
-	link := filepath.Join(os.Getenv(constant.EnvAndroidHome), constant.DirPlatforms)
-	modules := filepath.Join(os.Getenv(constant.EnvFlutterCache), constant.DirPlatforms)
+	dir := "platforms"
+	link := filepath.Join(os.Getenv("ANDROID_HOME"), dir)
+	modules := filepath.Join(os.Getenv("FLUTTER_CACHE"), dir)
 	if _, se := os.Stat(modules); nil != se && os.IsNotExist(se) {
 		err = os.MkdirAll(modules, os.ModePerm)
 	}
@@ -63,13 +64,14 @@ func (b *Boost) linkPlatforms(_ *context.Context) (err error) {
 }
 
 func (b *Boost) boostGradle(prop *properties.Properties, path string) (err error) {
-	if version, ve := b.gradleVersion(prop.MustGetString(constant.KeyDistributionUrl)); nil != ve {
+	urlKey := "distributionUrl"
+	if version, ve := b.gradleVersion(prop.MustGetString(urlKey)); nil != ve {
 		err = ve
 	} else if file, oe := os.OpenFile(path, os.O_WRONLY, os.ModePerm); nil != oe {
 		err = oe
 	} else {
 		url := fmt.Sprintf("https://mirrors.cloud.tencent.com/gradle/gradle-%s.zip", version)
-		_, _ = prop.MustSet(constant.KeyDistributionUrl, url)
+		_, _ = prop.MustSet(urlKey, url)
 		_, err = prop.Write(file, properties.UTF8)
 	}
 
