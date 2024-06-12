@@ -27,7 +27,7 @@ func (b *Boost) Runnable() bool {
 	return true
 }
 
-func (b *Boost) Run(ctx context.Context) (err error) {
+func (b *Boost) Run(ctx *context.Context) (err error) {
 	switch b.typ {
 	case constant.TypeAndroid:
 		err = b.android(ctx)
@@ -36,7 +36,7 @@ func (b *Boost) Run(ctx context.Context) (err error) {
 	return
 }
 
-func (b *Boost) android(ctx context.Context) (err error) {
+func (b *Boost) android(ctx *context.Context) (err error) {
 	gradleConfigPath := filepath.Join(b.source, "android", "gradle", "wrapper", "gradle-wrapper.properties")
 	if config, lfe := properties.LoadFile(gradleConfigPath, properties.UTF8); nil != lfe {
 		err = lfe
@@ -49,7 +49,7 @@ func (b *Boost) android(ctx context.Context) (err error) {
 	return
 }
 
-func (b *Boost) linkPlatforms(_ context.Context) (err error) {
+func (b *Boost) linkPlatforms(_ *context.Context) (err error) {
 	link := filepath.Join(os.Getenv(constant.EnvAndroidHome), constant.DirPlatforms)
 	modules := filepath.Join(os.Getenv(constant.EnvFlutterCache), constant.DirPlatforms)
 	if _, se := os.Stat(modules); nil != se && os.IsNotExist(se) {
@@ -77,8 +77,8 @@ func (b *Boost) boostGradle(prop *properties.Properties, path string) (err error
 }
 
 func (b *Boost) gradleVersion(url string) (version string, err error) {
-	re := regexp.MustCompile(`.*gradle-(.+).zip`)
-	match := re.FindStringSubmatch(url)
+	compiled := regexp.MustCompile(`.*gradle-(.+).zip`)
+	match := compiled.FindStringSubmatch(url)
 	if 1 < len(match) {
 		version = match[1]
 	}

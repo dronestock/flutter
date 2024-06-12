@@ -2,27 +2,23 @@ package step
 
 import (
 	"context"
+	"os"
+	"path/filepath"
 
-	"github.com/dronestock/drone"
+	"github.com/dronestock/flutter/internal/internal/command"
 	"github.com/dronestock/flutter/internal/internal/constant"
-	"github.com/goexl/gox/args"
+	"github.com/goexl/args"
 )
 
 type Build struct {
-	drone.Base
-
-	binary string
-	source string
-	typ    constant.Type
+	flutter *command.Flutter
+	typ     constant.Type
 }
 
-func NewBuild(base drone.Base, binary string, source string, typ constant.Type) *Build {
+func NewBuild(flutter *command.Flutter, typ constant.Type) *Build {
 	return &Build{
-		Base: base,
-
-		binary: binary,
-		source: source,
-		typ:    typ,
+		flutter: flutter,
+		typ:     typ,
 	}
 }
 
@@ -30,19 +26,18 @@ func (b *Build) Runnable() bool {
 	return true
 }
 
-func (b *Build) Run(ctx context.Context) (err error) {
+func (b *Build) Run(ctx *context.Context) (err error) {
 	target := "apk"
 	switch b.typ {
 	case constant.TypeAndroid:
 		target = "apk"
+		b.flutter.Remove("Gradle锁文件", filepath.Join(os.Getenv("GRADLE_USER_HOME"), "caches/journal-1"))
 	case constant.TypeWeb:
 		target = "web"
 	}
-	_args := args.New().Build().Subcommand("build", target)
-	if b.Verbose {
-		_args.Flag("verbose")
-	}
-	_, err = b.Command(b.binary).Args(_args.Build()).Dir(b.source).Context(ctx).Build().Exec()
+
+	arguments := args.New().Build().Subcommand("build", target)
+	err = b.flutter.Exec(ctx, arguments.Build())
 
 	return
 }

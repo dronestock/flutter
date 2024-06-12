@@ -3,23 +3,17 @@ package step
 import (
 	"context"
 
-	"github.com/dronestock/drone"
-	"github.com/goexl/gox/args"
+	"github.com/dronestock/flutter/internal/internal/command"
+	"github.com/goexl/args"
 )
 
 type Clean struct {
-	drone.Base
-
-	binary string
-	source string
+	flutter *command.Flutter
 }
 
-func NewClean(base drone.Base, binary string, source string) *Clean {
+func NewClean(flutter *command.Flutter) *Clean {
 	return &Clean{
-		Base: base,
-
-		binary: binary,
-		source: source,
+		flutter: flutter,
 	}
 }
 
@@ -27,12 +21,6 @@ func (c *Clean) Runnable() bool {
 	return true
 }
 
-func (c *Clean) Run(ctx context.Context) (err error) {
-	_args := args.New().Build().Subcommand("clean")
-	if c.Verbose {
-		_args.Flag("verbose")
-	}
-	_, err = c.Command(c.binary).Args(_args.Build()).Dir(c.source).Context(ctx).Build().Exec()
-
-	return
+func (c *Clean) Run(ctx *context.Context) error {
+	return c.flutter.Exec(ctx, args.New().Build().Subcommand("clean").Build())
 }

@@ -66,5 +66,5 @@ ENV PATH=${JAVA_HOME}/bin:${ANDROID_HOME}/bin:$PATH
 # 配置依赖包缓存路径
 ENV GRADLE_USER_HOME ${FLUTTER_CACHE}/gradle
 
-# 默认为Android平台
+# 默认为安卓平台
 ENV TYPE android

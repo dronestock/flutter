@@ -2,6 +2,7 @@ package internal
 
 import (
 	"github.com/dronestock/drone"
+	"github.com/dronestock/flutter/internal/internal/command"
 	"github.com/dronestock/flutter/internal/internal/constant"
 	"github.com/dronestock/flutter/internal/step"
 )
@@ -15,6 +16,8 @@ type plugin struct {
 	Source string `default:"${SOURCE=.}" validate:"dirpath"`
 	// 类型
 	Type constant.Type `default:"${TYPE=android}" validate:"required,oneof=android web"`
+
+	flutter *command.Flutter
 }
 
 func New() drone.Plugin {
@@ -32,4 +35,10 @@ func (p *plugin) Steps() drone.Steps {
 		drone.NewStep(step.NewGet(p.Base, p.Binary, p.Source)).Name("依赖").Interrupt().Build(),
 		drone.NewStep(step.NewBuild(p.Base, p.Binary, p.Source, p.Type)).Name("打包").Interrupt().Build(),
 	}
+}
+
+func (p *plugin) Setup() (err error) {
+	p.flutter = command.NewFlutter(&p.Base, p.Binary, p.Source)
+
+	return
 }

@@ -3,23 +3,17 @@ package step
 import (
 	"context"
 
-	"github.com/dronestock/drone"
-	"github.com/goexl/gox/args"
+	"github.com/dronestock/flutter/internal/internal/command"
+	"github.com/goexl/args"
 )
 
 type Get struct {
-	drone.Base
-
-	binary string
-	source string
+	flutter *command.Flutter
 }
 
-func NewGet(base drone.Base, binary string, source string) *Get {
+func NewGet(flutter *command.Flutter) *Get {
 	return &Get{
-		Base: base,
-
-		binary: binary,
-		source: source,
+		flutter: flutter,
 	}
 }
 
@@ -27,9 +21,6 @@ func (g *Get) Runnable() bool {
 	return true
 }
 
-func (g *Get) Run(ctx context.Context) (err error) {
-	_args := args.New().Build().Subcommand("pub", "get").Build()
-	_, err = g.Command(g.binary).Args(_args).Dir(g.source).Context(ctx).Build().Exec()
-
-	return
+func (g *Get) Run(ctx *context.Context) (err error) {
+	return g.flutter.Exec(ctx, args.New().Build().Subcommand("pub", "get").Build())
 }
