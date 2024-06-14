@@ -1,11 +1,4 @@
 kind: secret
-name: token_docker
-get:
-  path: secrets
-  name: token_docker_dronestock
----
-
-kind: secret
 name: password_ccr
 get:
   path: secrets
@@ -84,17 +77,10 @@ steps:
       - name: docker
         path: /var/lib/docker
     environment:
-      PASSWORD_DOCKER:
-        from_secret: token_docker
       PASSWORD_CCR:
         from_secret: password_ccr
     settings:
       repository: dronestock/$${NAME}
-      platforms:
-        - arch: amd64
-        - arch: arm64
-        - arch: arm
-          variant: v7
       targets:
         - dockerfile: Dockerfile
           prefix: android
@@ -105,13 +91,10 @@ steps:
         - dockerfile: linux.Dockerfile
           prefix: linux
           middle: "-"
-      registries:
-        - username: dronestock
-          password: $${PASSWORD_DOCKER}
-        - hostname: ccr.ccs.tencentyun.com
-          username: "160290688"
-          password: $${PASSWORD_CCR}
-          required: true
+      registry:
+        hostname: ccr.ccs.tencentyun.com
+        username: "160290688"
+        password: $${PASSWORD_CCR}
 
   - name: 改变
     image: ccr.ccs.tencentyun.com/dronestock/changelog
