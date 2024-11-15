@@ -21,7 +21,7 @@ COPY --from=java /opt/java/openjdk /docker/${JAVA_HOME}
 COPY flutter /docker/usr/local/bin/flutter
 
 
-FROM ccr.ccs.tencentyun.com/storezhang/flutter:0.0.59
+FROM ccr.ccs.tencentyun.com/storezhang/flutter:0.0.67
 
 LABEL author="storezhang<华寅>" \
     email="storezhang@gmail.com" \
