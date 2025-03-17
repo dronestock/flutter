@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/storezhang/flutter:0.0.67
+FROM ccr.ccs.tencentyun.com/storezhang/flutter:0.0.91
 
 LABEL author="storezhang<华寅>" \
     email="storezhang@gmail.com" \
