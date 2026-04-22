@@ -1,11 +1,11 @@
 module github.com/dronestock/flutter
 
-go 1.22
+go 1.23
 
 require (
 	github.com/dronestock/drone v1.2.5
-	github.com/goexl/args v0.0.1
-	github.com/goexl/gox v0.5.2
+	github.com/goexl/args v0.0.3
+	github.com/goexl/gox v0.6.3
 	github.com/magiconair/properties v1.8.7
 )
 
