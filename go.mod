@@ -6,7 +6,7 @@ require (
 	github.com/dronestock/drone v1.2.6
 	github.com/goexl/args v0.0.3
 	github.com/goexl/gox v1.9.2
-	github.com/magiconair/properties v1.8.10
+	github.com/magiconair/properties v1.18.11
 )
 
 require (
